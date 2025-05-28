@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// App.js (unchanged, just verifying key parts)
+import React, { useState, useEffect } from "react";
 import ImageUpload from "./components/ImageUpload";
 import ResultsDisplay from "./components/ResultsDisplay";
 
@@ -10,6 +11,7 @@ function App() {
 
   const mockApiResponse = (fileName) => {
     const lowerName = fileName ? fileName.toLowerCase() : "default";
+    console.log(`lowerName: ${lowerName}`);
     if (lowerName.includes("fruit") || lowerName.includes("apple")) {
       return [
         { object: "Apple", confidence: 95 },
@@ -29,6 +31,8 @@ function App() {
   const handleImageUpload = (imageUrl, fileName, errorMsg) => {
     if (errorMsg) {
       setError(errorMsg);
+      setImage(null);
+      setResults(null);
       return;
     }
     setError(null);
@@ -41,11 +45,29 @@ function App() {
   };
 
   const handleReset = () => {
+    if (image) {
+      URL.revokeObjectURL(image);
+    }
     setImage(null);
     setResults(null);
     setIsLoading(false);
     setError(null);
   };
+
+  useEffect(() => {
+    return () => {
+      if (image) {
+        URL.revokeObjectURL(image);
+      }
+    };
+  }, [image]);
+
+  useEffect(() => {
+    if (results !== null) {
+      const resultsObj = JSON.stringify(results);
+      console.log(`results: ${resultsObj}`);
+    }
+  }, [results]);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
