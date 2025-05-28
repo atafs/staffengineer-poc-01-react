@@ -6,23 +6,45 @@ function App() {
   const [image, setImage] = useState(null);
   const [results, setResults] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const mockApiResponse = () => {
-    // Simulate API response with mock data
-    return [
-      { object: "Apple", confidence: 95 },
-      { object: "Banana", confidence: 87 },
-      { object: "Orange", confidence: 92 },
-    ];
+  const mockApiResponse = (fileName) => {
+    const lowerName = fileName ? fileName.toLowerCase() : "default";
+    if (lowerName.includes("fruit") || lowerName.includes("apple")) {
+      return [
+        { object: "Apple", confidence: 95 },
+        { object: "Banana", confidence: 87 },
+        { object: "Orange", confidence: 92 },
+      ];
+    } else if (lowerName.includes("car")) {
+      return [
+        { object: "Car", confidence: 90 },
+        { object: "Wheel", confidence: 85 },
+      ];
+    } else {
+      return [{ object: "Unknown", confidence: 50 }];
+    }
   };
 
-  const handleImageUpload = (imageUrl) => {
+  const handleImageUpload = (imageUrl, fileName, errorMsg) => {
+    if (errorMsg) {
+      setError(errorMsg);
+      return;
+    }
+    setError(null);
     setImage(imageUrl);
     setIsLoading(true);
     setTimeout(() => {
-      setResults(mockApiResponse());
+      setResults(mockApiResponse(fileName));
       setIsLoading(false);
     }, 1000);
+  };
+
+  const handleReset = () => {
+    setImage(null);
+    setResults(null);
+    setIsLoading(false);
+    setError(null);
   };
 
   return (
@@ -30,7 +52,20 @@ function App() {
       <h1 className="text-3xl font-bold mb-6">Image Recognition App</h1>
       <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
         <ImageUpload onImageUpload={handleImageUpload} />
-        <ResultsDisplay image={image} results={results} isLoading={isLoading} />
+        {(image || results || error) && (
+          <button
+            onClick={handleReset}
+            className="mb-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          >
+            Reset
+          </button>
+        )}
+        <ResultsDisplay
+          image={image}
+          results={results}
+          isLoading={isLoading}
+          error={error}
+        />
       </div>
     </div>
   );
