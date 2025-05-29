@@ -13,7 +13,7 @@ const Separador4 = () => {
       <div className="w-full max-w-2xl flex flex-col items-center">
         <section className="mb-6 bg-white p-6 rounded-lg shadow-md w-full flex flex-col items-center">
           <h2 className="text-2xl font-semibold mb-2 text-center">
-            Section 2: Feature Overview
+            Section 4: Feature Overview
           </h2>
           <p className="text-gray-700 text-center">
             Overview of the image recognition features and capabilities.
